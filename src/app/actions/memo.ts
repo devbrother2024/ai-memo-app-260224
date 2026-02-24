@@ -4,8 +4,20 @@ import { createSupabaseClient } from '@/lib/supabase'
 import { Memo, MemoFormData } from '@/types/memo'
 import { v4 as uuidv4 } from 'uuid'
 
+// Supabase DB 테이블의 row 타입 (snake_case)
+interface MemoRow {
+  id: string
+  title: string
+  content: string
+  category: string
+  tags: string[] | null
+  summary: string | null
+  created_at: string
+  updated_at: string
+}
+
 // DB 컬럼명(snake_case)을 인터페이스 필드명(camelCase)으로 변환
-function mapRowToMemo(row: any): Memo {
+function mapRowToMemo(row: MemoRow): Memo {
   return {
     id: row.id,
     title: row.title,
@@ -16,19 +28,6 @@ function mapRowToMemo(row: any): Memo {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
-}
-
-// 인터페이스 필드명(camelCase)을 DB 컬럼명(snake_case)으로 변환
-function mapMemoToRow(memo: Partial<Memo>): any {
-  const row: any = {}
-  if (memo.title !== undefined) row.title = memo.title
-  if (memo.content !== undefined) row.content = memo.content
-  if (memo.category !== undefined) row.category = memo.category
-  if (memo.tags !== undefined) row.tags = memo.tags
-  if (memo.summary !== undefined) row.summary = memo.summary
-  if (memo.createdAt !== undefined) row.created_at = memo.createdAt
-  if (memo.updatedAt !== undefined) row.updated_at = memo.updatedAt
-  return row
 }
 
 // 모든 메모 조회
